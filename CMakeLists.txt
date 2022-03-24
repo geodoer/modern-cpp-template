@@ -18,7 +18,7 @@ include(cmake/StandardSettings.cmake)
 include(cmake/StaticAnalyzers.cmake)
 include(cmake/Utils.cmake)
 if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE "Debug")
+  set(CMAKE_BUILD_TYPE "Release") #Make Conan download the release version
 endif()
 message(STATUS "Started CMake for ${PROJECT_NAME} v${PROJECT_VERSION}...\n")
 
@@ -51,8 +51,9 @@ endif()
 # Enable package managers
 #
 
+set(${PROJECT_NAME}_ENABLE_CONAN 1) #use conan
 include(cmake/Conan.cmake)
-include(cmake/Vcpkg.cmake)
+# include(cmake/Vcpkg.cmake)
 
 #
 # Create library, setup header and source files
@@ -361,3 +362,9 @@ if(${PROJECT_NAME}_ENABLE_UNIT_TESTING)
   message(STATUS "Build unit tests for the project. Tests should always be found in the test folder\n")
   add_subdirectory(test)
 endif()
+
+#
+# Other settings
+# 
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)

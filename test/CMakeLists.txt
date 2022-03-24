@@ -15,6 +15,20 @@ foreach(file ${test_sources})
   string(REGEX REPLACE "(.*/)([a-zA-Z0-9_ ]+)(\.cpp)" "\\2" test_name ${file}) 
   add_executable(${test_name}_Tests ${file})
 
+  # Set up the group name
+  set_property(TARGET ${test_name}_Tests PROPERTY FOLDER test)
+
+  #
+  # Set the build/user include directories
+  #
+
+  # Allow usage of header files in the `src` directory, but only for utilities
+  target_include_directories(
+    ${test_name}_Tests
+    PUBLIC ${CMAKE_SOURCE_DIR}/include
+    PRIVATE ${CMAKE_SOURCE_DIR}/src
+  )
+
   #
   # Set the compiler standard
   #
@@ -49,13 +63,11 @@ foreach(file ${test_sources})
       set(GOOGLE_MOCK_LIBRARIES GTest::gmock GTest::gmock_main)
     endif()
 
+    #use conan
     target_link_libraries(
       ${test_name}_Tests
       PUBLIC
-        GTest::GTest
-        GTest::Main
-        ${GOOGLE_MOCK_LIBRARIES}
-        ${${CMAKE_PROJECT_NAME}_TEST_LIB}
+      ${CONAN_LIBS}
     )
   elseif(${CMAKE_PROJECT_NAME}_USE_CATCH2)
     find_package(Catch2 REQUIRED)
